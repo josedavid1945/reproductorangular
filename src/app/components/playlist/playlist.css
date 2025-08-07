@@ -1,0 +1,46 @@
+.playlist {
+  list-style: none;
+  padding: 0;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.playlist li {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.playlist li:hover {
+  background-color: #f0f8ff; /* AliceBlue */
+}
+
+.playlist li.playing {
+  background-color: #d1e7ff; /* Color más claro de Bootstrap primary */
+  font-weight: bold;
+}
+
+.playlist-album-art {
+  width: 40px;
+  height: 40px;
+  border-radius: 4px;
+  margin-right: 15px;
+  object-fit: cover;
+}
+
+.playlist-song-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.playlist-song-info .title {
+  font-size: 1em;
+}
+
+.playlist-song-info .artist {
+  font-size: 0.8em;
+  color: #666;
+}

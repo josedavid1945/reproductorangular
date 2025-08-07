@@ -1,0 +1,15 @@
+<h2>Lista de Reproducción</h2>
+<ul class="playlist">
+  @for (song of playlist$ | async; track song.url) {
+    <li 
+      (click)="playSong(song)"
+      [class.playing]="(currentSong$ | async)?.url === song.url">
+      
+      <img [src]="song.albumArt" class="playlist-album-art" alt="art">
+      <div class="playlist-song-info">
+        <span class="title">{{ song.titulo }}</span>
+        <span class="artist">{{ song.artista }}</span>
+      </div>
+    </li>
+  }
+</ul>

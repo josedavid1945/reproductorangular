@@ -1,0 +1,37 @@
+@if (currentSong$ | async; as song) {
+  <div class="container">
+    <img [src]="song.albumArt" alt="Carátula de {{ song.titulo }}" class="album-art">
+    
+    <div class="detalles">
+      <div class="info">
+        <h3>{{ song.titulo }}</h3>
+        <p>{{ song.artista }}</p>
+      </div>
+
+      <div class="progress-section">
+        <span class="time">{{ formatTime((currentTime$ | async)!) }}</span>
+        <input 
+          type="range" 
+          class="progress-bar"
+          [value]="(currentTime$ | async)!"
+          [max]="(duration$ | async)!"
+          (input)="onSeek($event)">
+        <span class="time">{{ formatTime((duration$ | async)!) }}</span>
+      </div>
+      
+      <div class="controls">
+        <button titulo="Aleatorio" (click)="toggleShuffle()" [class.active]="(aleatorio$ | async)!">
+          🔀
+        </button>
+        <button (click)="prevSong()">⏮️</button>
+        <button (click)="togglePlayPause()" class="play-pause-btn">
+          @if (ejecutando$ | async) { <span>⏸️</span> } @else { <span>▶️</span> }
+        </button>
+        <button (click)="nextSong()">⏭️</button>
+        <button titulo="Repetir" (click)="banderabucle()" [class.active]="(repitiendo$ | async)!">
+          🔄
+        </button>
+      </div>
+    </div>
+  </div>
+}

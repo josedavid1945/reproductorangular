@@ -1,12 +1,12 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { PlayerComponent } from './components/player/player';
+import { PlaylistComponent } from './components/playlist/playlist';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  standalone: true, // Se declara como Standalone
+  imports: [PlayerComponent, PlaylistComponent], // Importa otros componentes que usa
   templateUrl: './app.html',
-  styleUrl: './app.css'
+  styleUrls: ['./app.css']
 })
-export class App {
-  protected title = 'mi-reproductor-musical';
-}
+export class AppComponent {}
