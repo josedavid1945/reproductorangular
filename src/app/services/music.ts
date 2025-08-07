@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, throwError } from 'rxjs';
 import { map, tap, catchError } from 'rxjs/operators';
@@ -38,8 +38,8 @@ export class MusicService {
   // --- Configuración de la API ---
   private clientId = 'fb80efce'; // Tu client_id
   private apiUrl = `https://api.jamendo.com/v3.0/tracks/?client_id=${this.clientId}&format=jsonpretty&limit=20&fuzzytags=groove+rock&include=musicinfo`;
-
-  constructor(private http: HttpClient) {
+  private http= inject(HttpClient)
+  constructor() {
     this.audio = new Audio();
     this.cargarcanciones();
 
