@@ -1,15 +1,25 @@
-<h2>Lista de Reproducción</h2>
+<div class="playlist-header">
+  <h2>Lista de Reproducción</h2>
+  <input 
+    type="text" 
+    class="search-bar" 
+    placeholder="Buscar canción "
+    [(ngModel)]="searchTerm">
+</div>
+
 <ul class="playlist">
-  @for (song of playlist$ | async; track song.url) {
+  @for (song of (playlist$ | async) | filter:searchTerm; track song.url) {
     <li 
       (click)="playSong(song)"
       [class.playing]="(currentSong$ | async)?.url === song.url">
-      
       <img [src]="song.albumArt" class="playlist-album-art" alt="art">
       <div class="playlist-song-info">
         <span class="title">{{ song.titulo }}</span>
         <span class="artist">{{ song.artista }}</span>
       </div>
+      <button class="delete-btn" (click)="removeSong(song, $event)" title="Eliminar canción">
+        &times;
+      </button>
     </li>
   }
 </ul>

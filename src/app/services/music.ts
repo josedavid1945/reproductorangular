@@ -3,9 +3,6 @@ import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, throwError } from 'rxjs';
 import { map, tap, catchError } from 'rxjs/operators';
 
-/**
- * Define la estructura de datos para una canción en la aplicación.
- */
 export interface Song {
   titulo: string;
   artista: string;
@@ -18,7 +15,6 @@ export interface Song {
   providedIn: 'root'
 })
 export class MusicService {
-  // --- Estado Interno del Servicio ---
   private audio: HTMLAudioElement;
   private playlist: Song[] = [];
   private originalPlaylist: Song[] = []; 
@@ -26,7 +22,6 @@ export class MusicService {
   private aleatorio = false;
   private repitiendo = false;
 
-  // --- Observables  ---
   public currentSong$ = new BehaviorSubject<Song | null>(null);
   public ejecutando$ = new BehaviorSubject<boolean>(false);
   public playlist$ = new BehaviorSubject<Song[]>([]);
@@ -35,15 +30,14 @@ export class MusicService {
   public aleatorio$ = new BehaviorSubject<boolean>(this.aleatorio);
   public repitiendo$ = new BehaviorSubject<boolean>(this.repitiendo);
 
-  // --- Configuración de la API ---
-  private clientId = 'fb80efce'; // Tu client_id
+  private http = inject(HttpClient);
+  private clientId = 'fb80efce';
   private apiUrl = `https://api.jamendo.com/v3.0/tracks/?client_id=${this.clientId}&format=jsonpretty&limit=20&fuzzytags=groove+rock&include=musicinfo`;
-  private http= inject(HttpClient)
+
   constructor() {
     this.audio = new Audio();
     this.cargarcanciones();
 
-    // --- Eventos Nativos del Elemento Audio ---
     this.audio.addEventListener('ended', () => {
       if (!this.audio.loop) {
         this.next();
@@ -53,9 +47,6 @@ export class MusicService {
     this.audio.addEventListener('loadedmetadata', () => this.duration$.next(this.audio.duration));
   }
   
-  /**
-   * Carga la lista de canciones inicial desde la API de Jamendo.
-   */
   private cargarcanciones() {
     this.http.get<any>(this.apiUrl).pipe(
       map(response => {
@@ -77,26 +68,21 @@ export class MusicService {
         }
       }),
       catchError(error => {
-        console.error('MusicService: ¡No se pudo llamar la api papi!', error);
-        return throwError(() => new Error('Vaya a spotify nomas.'));
+        console.error('MusicService: Error al llamar a la API', error);
+        return throwError(() => new Error('No se pudieron obtener las canciones.'));
       })
     ).subscribe();
   }
 
-  /**
-   * 
-   * @param song 
-   */
   private loadSong(song: Song) {
     this.currentSong$.next(song);
     this.audio.src = song.url;
   }
 
-  // --- Controles de Reproducción Principales ---
-
   play(song?: Song) {
     if (song) {
       this.currentSongIndex = this.playlist.findIndex(s => s.url === song.url);
+      if (this.currentSongIndex === -1) return; // Evita errores si la canción no se encuentra
       this.loadSong(song);
     }
     this.audio.play();
@@ -124,8 +110,6 @@ export class MusicService {
     this.audio.currentTime = timeInSeconds;
   }
 
-  // --- Funciones de Loop y Shuffle ---
-
   banderabucle() {
     this.repitiendo = !this.repitiendo;
     this.audio.loop = this.repitiendo; 
@@ -137,6 +121,8 @@ export class MusicService {
 
     if (this.aleatorio) {
       this.randoms();
+    
+      this.play(this.playlist[this.currentSongIndex]);
     } else {
       const currentSong = this.currentSong$.value;
       this.playlist = [...this.originalPlaylist];
@@ -147,10 +133,7 @@ export class MusicService {
     this.playlist$.next(this.playlist);
     this.aleatorio$.next(this.aleatorio);
   }
-
-  /**
-   * Mezcla la lista de reproducción usando el algoritmo Fisher-Yates.
-   */
+  
   private randoms() {
     let currentIndex = this.playlist.length;
     while (currentIndex !== 0) {
@@ -158,5 +141,11 @@ export class MusicService {
       currentIndex--;
       [this.playlist[currentIndex], this.playlist[randomIndex]] = [this.playlist[randomIndex], this.playlist[currentIndex]];
     }
+  }
+
+  eliminarCancion(songToRemove: Song) {
+    this.playlist = this.playlist.filter(song => song.url !== songToRemove.url);
+    this.originalPlaylist = this.originalPlaylist.filter(song => song.url !== songToRemove.url);
+    this.playlist$.next(this.playlist);
   }
 }

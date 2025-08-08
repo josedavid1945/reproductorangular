@@ -1,3 +1,24 @@
+.playlist-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.search-bar {
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  width: 100%;
+  font-size: 0.9em;
+}
+
+.search-bar:focus {
+  outline: none;
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 2px rgba(13, 110, 253, 0.25);
+}
+
 .playlist {
   list-style: none;
   padding: 0;
@@ -12,14 +33,15 @@
   border-bottom: 1px solid #eee;
   cursor: pointer;
   transition: background-color 0.2s;
+  position: relative;
 }
 
 .playlist li:hover {
-  background-color: #f0f8ff; /* AliceBlue */
+  background-color: #f0f8ff;
 }
 
 .playlist li.playing {
-  background-color: #d1e7ff; /* Color más claro de Bootstrap primary */
+  background-color: #d1e7ff;
   font-weight: bold;
 }
 
@@ -43,4 +65,29 @@
 .playlist-song-info .artist {
   font-size: 0.8em;
   color: #666;
+}
+
+.delete-btn {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #aaa;
+  cursor: pointer;
+  padding: 5px;
+  line-height: 1;
+  border-radius: 50%;
+  display: none;
+}
+
+.playlist li:hover .delete-btn {
+  display: block;
+}
+
+.delete-btn:hover {
+  color: #f44336;
+  background-color: #f1f1f1;
 }
